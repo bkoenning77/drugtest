@@ -1,41 +1,43 @@
 <?php
 	$fh = fopen("formulary.txt", 'r') or die("File does not exist or you lack permission to open it");
-	//$line = fgets($fh);
-	//fclose($fh);
-	//echo $line;
 
-	//echo file_get_contents('formulary.txt');	
 	$linecount = 0;
-	while (! feof($fh) && $linecount < 2) {
+	$finalString = "";
+	while (! feof($fh)) {
 		$str = fgets($fh);
-		$linecount++;
-		//echo $str;
-	}
-	fclose($fh);
-	//print($linecount);
-	//print(gettype($str));
-	//echo $str;
-	$fieldarray = explode(",", $str);
-	//print($fieldarray);
-	$count = 0;
-	foreach ($fieldarray as $value) {
-		//print($value);
-		$fieldarray[$count] = trim($fieldarray[$count], "\"");
-		$fieldarray[$count] = trim($fieldarray[$count], "\n");
-		if ($value == "") {
-			$fieldarray[$count] = "\\N";
+
+
+		if ($linecount++ == 0) continue;
+
+		$lineArray = explode(",", $str);
+
+		$arrayCount = 0;
+
+		foreach ($lineArray as $value) {
+			$lineArray[$arrayCount] = trim($lineArray[$arrayCount], "\"");
+			if ($value == "") {
+				$lineArray[$arrayCount] = "\\N";
+			}
+			$arrayCount++;
 		}
-		$count++;
-		//print("\n");
+
+		array_pop($lineArray);
+		$lineString = "";
+		$arrayCount = 0;
+		foreach ($lineArray as $value) {
+			$lineString .= $value;
+			if ($arrayCount != count($lineArray) - 1) {
+				$lineString .= "\t";
+			}
+		}
+		$lineString .= "\n";
+		$finalString .= $lineString;
 	}
-	foreach ($fieldarray as $value) {
-		print($value);
-		//if (strpos($value, "\n")) print('contains newline');
-		print("\n");
-	}
-
-	print($fieldarray[count($fieldarray) - 1]);
-
-
+	$finalString = trim($finalString, "\n");
+	$finalString .= "\n";
+	fclose($fh);
+	//print($finalString);
+	$file = "updated.txt";
+	file_put_contents($file, $finalString);
 
 ?>
