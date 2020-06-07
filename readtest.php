@@ -7,7 +7,10 @@
 		$str = fgets($fh);
 
 
+
 		if ($linecount++ == 0) continue;
+
+		$str = trim($str);
 
 		$lineArray = explode(",", $str);
 
@@ -26,9 +29,14 @@
 		$arrayCount = 0;
 		foreach ($lineArray as $value) {
 			$lineString .= $value;
-			if ($arrayCount != count($lineArray) - 1) {
+			if ($arrayCount++ != count($lineArray) - 1) {
 				$lineString .= "\t";
 			}
+		}
+		//$lineString .= trim($lineString);
+
+		if (substr_compare($lineString, "\\N", -2, 2) == 0) {
+			$lineString .= "\t\\N";
 		}
 		$lineString .= "\n";
 		$finalString .= $lineString;
